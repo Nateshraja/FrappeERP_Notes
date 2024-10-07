@@ -1,0 +1,123 @@
+sudo apt -y update
+sudo apt -y upgrade
+
+Check python is exist or install
+python3 --version
+---Python 3.10.12
+
+Check git is exist or install
+ git --version
+
+
+sudo apt-get install python3-dev
+
+sudo apt-get install python3-setuptools python3-pip
+
+sudo apt-get install virtualenv
+
+sudo apt-get install software-properties-common
+
+ sudo apt install mariadb-server mariadb-client
+
+sudo apt-get install xvfb libfontconfig wkhtmltopdf
+
+sudo mysql_secure_installation
+If ERROR -- USE SUDO REBOOT
+
+
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+ ''''
+[server]
+user = mysql
+pid-file = /run/mysqld/mysqld.pid
+socket = /run/mysqld/mysqld.sock
+basedir = /usr
+datadir = /var/lib/mysql
+tmpdir = /tmp
+lc-messages-dir = /usr/share/mysql
+bind-address = 127.0.0.1
+query_cache_size = 16M
+log_error = /var/log/mysql/error.log
+
+[mysqld]
+innodb-file-format=barracuda
+innodb-file-per-table=1
+innodb-large-prefix=1
+character-set-client-handshake = FALSE
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci      
+ 
+[mysql]
+default-character-set = utf8mb4
+
+'''''
+
+sudo service mysql restart
+sudo apt install curl
+ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+
+source ~/.profile
+nvm install 16
+sudo apt-get install npm
+
+sudo npm install -g yarn
+
+sudo pip3 install frappe-bench
+
+bench --version
+check python - corresponding venv and redis-server is installed or not 
+
+IF CORRESPONDING PYTHON VERSION IS NOT AVAILABLE CHECK
+sudo apt update
+apt-cache search python3
+
+IS NOT AVAILABE -- 
+
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+THEN DOWNLOAD
+sudo apt install python3.11 python3.11-venv python3.11-dev
+
+ONCE DOWNLOAD  -- REBOOT THE SYSTEM -- TO RESET THE CONFIGURATION
+
+
+ bench init frappe-bench --frappe-branch version-14
+
+sudo apt-get install supervisor
+sudo apt-get install nginx
+
+ bench new-site test.com
+
+sudo bench setup production $USER
+if 
+sudo apt-get install fail2
+ban
+
+sudo systemctl reload nginx or  sudo systemctl start nginx  then sudo systemctl reload nginx
+check sudo apt-get install ansible
+else
+sudo bench setup production $USER
+
+for Permission to load the frappe ui
+sudo chown -R $USER:$USER /home/$USER
+sudo chmod -R 755 /home/$USER
+
+
+If your Get a supervisorctl error while bench restart
+here is comment use as per your error stage
+bench setup supervisor
+this command is used to move the file
+sudo mv ~/frappe-bench/config/supervisor.conf /etc/supervisor/conf.d/frappe-bench.conf
+
+this is used to reread means rewirte and update the files
+sudo supervisorctl reread
+sudo supervisorctl update
+
+check status 
+sudo supervisorctl status
+all bench worker working fine 
+then use bench restart
+
+
+
+
