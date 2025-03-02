@@ -1,0 +1,418 @@
+STEP 1 Install git
+
+	sudo apt-get install git
+
+STEP 2 install python-dev
+
+	sudo apt-get install python3-dev
+
+STEP 3 Install setuptools and pip (Python's Package Manager).
+
+	sudo apt-get install python3-setuptools python3-pip
+
+STEP 4 Install virtualenv
+
+	sudo apt-get install virtualenv
+	sudo apt install python3.10-venv
+
+STEP 5 Install MariaDB
+
+	sudo apt-get install software-properties-common
+	sudo apt install mariadb-server
+	sudo mysql_secure_installation
+
+
+  In order to log into MariaDB to secure it, we'll need the current
+  password for the root user. If you've just installed MariaDB, and
+  haven't set the root password yet, you should just press enter here.
+
+  Enter current password for root (enter for none): # PRESS ENTER
+  OK, successfully used password, moving on...
+  
+  
+  Switch to unix_socket authentication [Y/n] Y
+  Enabled successfully!
+  Reloading privilege tables..
+   ... Success!
+
+  Change the root password? [Y/n] Y
+  New password: natesh1499
+  Re-enter new password: natesh1499
+  Password updated successfully!
+  Reloading privilege tables..
+   ... Success!
+
+  Remove anonymous users? [Y/n] Y
+   ... Success!
+
+   Disallow root login remotely? [Y/n] Y
+   ... Success!
+
+   Remove test database and access to it? [Y/n] Y
+   - Dropping test database...
+   ... Success!
+   - Removing privileges on test database...
+   ... Success!
+
+   Reload privilege tables now? [Y/n] Y
+   ... Success!
+
+STEP 6 MySQL database development files
+
+sudo apt-get install libmysqlclient-dev
+
+STEP 7 Edit the mariadb configuration ( unicode character encoding )
+------------------------------------------------------------------
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+
+add this to the 50-server.cnf file
+
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+
+# this is read by the standalone daemon and embedded servers
+[server]
+user = mysql
+pid-file = /run/mysqld/mysqld.pid
+socket = /run/mysqld/mysqld.sock
+basedir = /usr
+datadir = /var/lib/mysql
+tmpdir = /tmp
+lc-messages-dir = /usr/share/mysql
+bind-address = 0.0.0.0
+query_cache_size = 16M
+log_error = /var/log/mysql/error.log
+# this is only for the mysqld standalone daemon
+[mysqld]
+innodb-file-format=barracuda
+innodb-file-per-table=1
+innodb-large-prefix=1
+character-set-client-handshake = FALSE
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci 
+#
+# * Basic Settings
+#
+
+#user                    = mysql
+pid-file                = /run/mysqld/mysqld.pid
+basedir                 = /usr
+#datadir                 = /var/lib/mysql
+#tmpdir                  = /tmp
+
+# Broken reverse DNS slows down connections considerably and name resolve is
+# safe to skip if there are no "host by domain name" access grants
+#skip-name-resolve
+
+# Instead of skip-networking the default is now to listen only on
+# localhost which is more compatible and is not less secure.
+#bind-address            = 127.0.0.1
+
+#
+# * Fine Tuning
+#
+
+#key_buffer_size        = 128M
+#max_allowed_packet     = 1G
+#thread_stack           = 192K
+#thread_cache_size      = 8
+# This replaces the startup script and checks MyISAM tables if needed
+# the first time they are touched
+#myisam_recover_options = BACKUP
+#max_connections        = 100
+#table_cache            = 64
+
+#
+# * Logging and Replication
+#
+
+# Both location gets rotated by the cronjob.
+# Be aware that this log type is a performance killer.
+# Recommend only changing this at runtime for short testing periods if needed!
+#general_log_file       = /var/log/mysql/mysql.log
+#general_log            = 1
+
+# When running under systemd, error logging goes via stdout/stderr to journald
+# and when running legacy init error logging goes to syslog due to
+# /etc/mysql/conf.d/mariadb.conf.d/50-mysqld_safe.cnf
+# Enable this if you want to have error logging into a separate file
+#log_error = /var/log/mysql/error.log
+# Enable the slow query log to see queries with especially long duration
+#slow_query_log_file    = /var/log/mysql/mariadb-slow.log
+#long_query_time        = 10
+#log_slow_verbosity     = query_plan,explain
+#log-queries-not-using-indexes
+#min_examined_row_limit = 1000
+
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+#server-id              = 1
+#log_bin                = /var/log/mysql/mysql-bin.log
+expire_logs_days        = 10
+#max_binlog_size        = 100M
+
+#
+# * SSL/TLS
+#
+
+# For documentation, please read
+# https://mariadb.com/kb/en/securing-connections-for-client-and-server/
+#ssl-ca = /etc/mysql/cacert.pem
+#ssl-cert = /etc/mysql/server-cert.pem
+#ssl-key = /etc/mysql/server-key.pem
+#require-secure-transport = on
+
+#
+# * Character sets
+#
+
+# MySQL/MariaDB default is Latin1, but in Debian we rather default to the full
+# utf8 4-byte character set. See also client.cnf
+
+#character-set-server  = utf8mb4
+#collation-server      = utf8mb4_general_ci
+
+#
+# * InnoDB
+#
+
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+# Most important is to give InnoDB 80 % of the system RAM for buffer use:
+# https://mariadb.com/kb/en/innodb-system-variables/#innodb_buffer_pool_size
+#innodb_buffer_pool_size = 8G
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+
+# This group is only read by MariaDB-10.6 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don't understand
+[mariadb-10.6]
+
+[mysql]
+default-character-set = utf8mb4
+
+ Now press (Ctrl-X) to exit
+
+ sudo service mysql restart
+------------------------------------------------------------------
+STEP 8 install Redis
+
+	sudo apt-get install redis-server
+
+STEP 9 install Node.js 14.X package
+
+	sudo apt install curl 
+	curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+	source ~/.profile
+	nvm install 16
+
+STEP 10 
+	install Yarn
+
+	sudo apt-get install npm
+
+	sudo npm install -g yarn
+
+STEP 11 install wkhtmltopdf
+
+	sudo apt-get install xvfb libfontconfig wkhtmltopdf
+
+STEP 12 install frappe-bench
+
+	sudo -H pip3 install frappe-bench==5.10.1
+
+	bench --version
+
+STEP 13 initilise the frappe bench & install frappe latest version
+
+	bench init frappe-bench --frappe-branch version-14
+
+	cd frappe-bench/
+	bench start
+
+STEP 14 create a site in frappe bench
+
+	bench new-site nattuerp.com
+
+	bench use nattuerp.com
+
+STEP 15 install ERPNext latest version in bench & site
+
+	bench get-app erpnext --branch version-14
+
+	bench --site nattuerp.com install-app erpnext
+
+	bench start
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+-------------------------------------------------------------------------------------
+User Creation:
+
+mysql -u root -p 
+-- Switch to the MySQL/MariaDB database
+USE mysql;
+
+-- Create the user if it doesn't exist
+CREATE USER IF NOT EXISTS 'nattu'@'%' IDENTIFIED BY 'natesh1499';
+
+-- Grant all privileges on all databases and tables
+GRANT ALL PRIVILEGES ON *.* TO 'nattu'@'%' WITH GRANT OPTION;
+
+-- Apply the changes
+FLUSH PRIVILEGES;
+
+-- Show granted privileges (optional)
+SHOW GRANTS FOR 'nattu'@'%';
+
+mysql -u nattu -p -h 192.168.20.63
+
+-----------------------------------------------------------------------------------
+SSHD Install and Activation:
+
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
+
+# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
+
+Include /etc/ssh/sshd_config.d/*.conf
+
+Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+#HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_ecdsa_key
+#HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Ciphers and keying
+#RekeyLimit default none
+
+# Logging
+#SyslogFacility AUTH
+#LogLevel INFO
+
+# Authentication:
+
+#LoginGraceTime 2m
+PermitRootLogin yes
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+PubkeyAuthentication yes
+
+# Expect .ssh/authorized_keys2 to be disregarded by default in future.
+#AuthorizedKeysFile	.ssh/authorized_keys .ssh/authorized_keys2
+
+#AuthorizedPrincipalsFile none
+
+#AuthorizedKeysCommand none
+#AuthorizedKeysCommandUser nobody
+
+# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
+#HostbasedAuthentication no
+# Change to yes if you don't trust ~/.ssh/known_hosts for
+# HostbasedAuthentication
+#IgnoreUserKnownHosts no
+# Don't read the user's ~/.rhosts and ~/.shosts files
+#IgnoreRhosts yes
+
+# To disable tunneled clear text passwords, change to no here!
+PasswordAuthentication yes
+#PermitEmptyPasswords no
+
+# Change to yes to enable challenge-response passwords (beware issues with
+# some PAM modules and threads)
+KbdInteractiveAuthentication no
+
+# Kerberos options
+#KerberosAuthentication no
+#KerberosOrLocalPasswd yes
+#KerberosTicketCleanup yes
+#KerberosGetAFSToken no
+
+# GSSAPI options
+#GSSAPIAuthentication no
+#GSSAPICleanupCredentials yes
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the KbdInteractiveAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via KbdInteractiveAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and KbdInteractiveAuthentication to 'no'.
+UsePAM yes
+
+#AllowAgentForwarding yes
+#AllowTcpForwarding yes
+#GatewayPorts no
+X11Forwarding yes
+#X11DisplayOffset 10
+#X11UseLocalhost yes
+#PermitTTY yes
+PrintMotd no
+#PrintLastLog yes
+#TCPKeepAlive yes
+#PermitUserEnvironment no
+#Compression delayed
+#ClientAliveInterval 0
+#ClientAliveCountMax 3
+#UseDNS no
+#PidFile /run/sshd.pid
+#MaxStartups 10:30:100
+#PermitTunnel no
+#ChrootDirectory none
+#VersionAddendum none
+
+# no default banner path
+#Banner none
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+# override default of no subsystems
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+# Example of overriding settings on a per-user basis
+#Match User anoncvs
+#	X11Forwarding no
+#	AllowTcpForwarding no
+#	PermitTTY no
+#	ForceCommand cvs server
+
+
+
+
