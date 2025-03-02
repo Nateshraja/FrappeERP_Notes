@@ -1,3 +1,8 @@
+Frappe Erpnext Installation, User Configuration, Mariadb Config and SSH Config
+
+sudo apt-get update
+sudo apt-get upgrade
+
 STEP 1 Install git
 
 	sudo apt-get install git
@@ -252,7 +257,7 @@ STEP 15 install ERPNext latest version in bench & site
 
 	bench start
 	
-	
+bench --sites nattuerp.com developer_mode 1	
 	
 	
 	
