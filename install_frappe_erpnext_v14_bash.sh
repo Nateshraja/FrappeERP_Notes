@@ -9,29 +9,37 @@ read -p "Enter new Site Admin Password: " adminpwd
 # ========= INSTALL DEPENDENCIES =========
 echo "⚙️ Installing system dependencies..."
 sudo apt update
-sudo apt install -y git curl python3.10 python3.10-dev python3.10-distutils python3-pip python3-setuptools \
-    redis-server software-properties-common cron mariadb-server mariadb-client libmysqlclient-dev \
-    xvfb libfontconfig wkhtmltopdf nginx supervisor build-essential libssl-dev libffi-dev
+sudo apt install -y \
+    git curl software-properties-common cron \
+    mariadb-server mariadb-client libmysqlclient-dev \
+    redis-server xvfb libfontconfig wkhtmltopdf \
+    nginx supervisor build-essential libssl-dev libffi-dev \
+    python3.10 python3.10-dev python3.10-distutils python3-pip python3.10-venv python3-setuptools
 
-# ========= ALIAS python3.10 TO python =========
+# ========= SET PYTHON 3.10 AS DEFAULT =========
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 sudo update-alternatives --set python /usr/bin/python3.10
 
-# ========= NODE.JS & YARN =========
+# ========= ENSUREPIP & UPGRADE =========
+echo "🔧 Ensuring pip and upgrading it..."
+python3.10 -m ensurepip --upgrade
+python3.10 -m pip install --upgrade pip
+
+# ========= INSTALL NODE.JS & YARN =========
 echo "📦 Installing Node.js and Yarn..."
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -g yarn
 
-# ========= INSTALL BENCH =========
+# ========= INSTALL BENCH CLI =========
 echo "📦 Installing Frappe Bench CLI..."
 pip3 install frappe-bench
 
 # ========= CONFIGURE MARIADB ROOT PASSWORD =========
-echo "🔐 Setting MariaDB root password..."
+echo "🔐 Configuring MariaDB root user..."
 sudo service mysql stop
+sleep 5
 sudo mysqld_safe --skip-grant-tables > /dev/null 2>&1 &
-
 sleep 5
 
 mysql -u root <<MYSQL_SCRIPT
@@ -43,6 +51,7 @@ MYSQL_SCRIPT
 sudo pkill -f mysqld_safe
 sleep 3
 sudo service mysql start
+sleep 3
 
 export MYSQL_ROOT_PASSWORD=$dbrootpwd
 
@@ -69,8 +78,8 @@ bench use $sitename
 # ========= CREATE DB USER & GRANT PERMISSIONS =========
 echo "🔐 Creating database user and granting access..."
 mysql -u root -p$dbrootpwd <<MYSQL_SCRIPT
-CREATE USER IF NOT EXISTS '${sitename}_user'@'localhost' IDENTIFIED BY '${dbrootpwd}';
-GRANT ALL PRIVILEGES ON \`${dbname}\`.* TO '${sitename}_user'@'localhost';
+CREATE USER IF NOT EXISTS '${sitename}'@'localhost' IDENTIFIED BY '${dbrootpwd}';
+GRANT ALL PRIVILEGES ON \`${dbname}\`.* TO '${sitename}'@'localhost';
 FLUSH PRIVILEGES;
 MYSQL_SCRIPT
 
@@ -79,7 +88,7 @@ echo "✅ Setup Complete!"
 echo "Site: $sitename"
 echo "Database: $dbname"
 echo "Admin Password: $adminpwd"
-echo "DB User: ${sitename}_user"
+echo "DB User: ${sitename}"
 echo "DB Password: $dbrootpwd"
 
 # ========= START SERVER =========
